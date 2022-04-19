@@ -201,12 +201,12 @@ async function getCommissionAndSplitReward(mnemonic:string,chainid:string) {
 
 }
 
-if (process.env.MNEMONIC== undefined || process.env.MNEMONIC == "") {
+if (process.env.MNEMONIC== undefined || process.env.MNEMONIC == "" || process.env.chainid == undefined || process.env.chainid == "") {
     logger.error("MNEMONIC is undefined or empty")
     process.exit(1)
 }
 else {
-    getCommissionAndSplitReward(process.env.MNEMONIC,"mooncat-1-1")
+    getCommissionAndSplitReward(process.env.MNEMONIC,process.env.chainid)
 }
 
 
