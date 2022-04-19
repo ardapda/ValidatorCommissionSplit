@@ -14,9 +14,9 @@ npm install -g ts-node
 1. `git clone https://github.com/silentnoname/ValidatorCommissionSplit`
 2. `cd ValidatorCommissionSplit`
 3. `npm install`
-4. `cp .env.example .env`
-5. Edit the `chainconfig.ts` to add your custom chain and network config
-6. Edit the `addresslist.ts` , add your validator addresses ,and the address that you want to split the commission to. Also you can add address for your custom chains.
+4. Edit the `chainconfig.ts` to add your custom chain and network config
+5. Edit the `addresslist.ts` , add your validator address ,and the delegators addresses that you want to split the commission to. Also you can add addresses for your custom chains.
+6. `cp .env.example .env`
 7. Input your validator account mnemonic and chainid to `.env` file
 
 ## Run
