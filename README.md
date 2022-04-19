@@ -16,6 +16,6 @@ npm install -g ts-node
 3. `npm install`
 4. `cp .env.example .env`
 5. Input your validator account mnemonic to `.env` file
-6. Edit the `chainconfig.ts` to add your custom chain
+6. Edit the `chainconfig.ts` to add your custom chain and network config
 7. Edit the `addresslist.ts` , add your validator addresses ,and the address that you want to split the commission to. Also you can add address for your custom chains.
 8. `ts-node CommissionSplit.ts`

@@ -10,8 +10,8 @@ export const chainconfig: { [key: string]: any } = {
     },
     "mooncat-1-1":{
         name:'mooncat',
-        rpc:'',
-        rest_api:'',
+        rpc:'http://localhost:26657/',
+        rest_api:'http://localhost:1317/',
         symbol:'CRE',
         denom: "ucre",
         min_tx_fee: "0",
