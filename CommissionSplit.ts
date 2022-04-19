@@ -153,8 +153,8 @@ async function getCommissionAndSplitReward(mnemonic:string,chainid:string) {
     }
     if (withdrawCommissiontx.code == 0) {
         logger.info("account: " + address + " withdraw Commission successfully,txhash: " + withdrawCommissiontx.transactionHash)
-        //get the commission amount
 
+        //get the commission amount
         let rawlog = JSON.parse(withdrawCommissiontx.rawLog as string)
         let events: event[] = rawlog[0].events
         let commission = 0
@@ -202,7 +202,7 @@ async function getCommissionAndSplitReward(mnemonic:string,chainid:string) {
 }
 
 if (process.env.MNEMONIC== undefined || process.env.MNEMONIC == "" || process.env.chainid == undefined || process.env.chainid == "") {
-    logger.error("MNEMONIC is undefined or empty")
+    logger.error("MNEMONIC and chainid are undefined or empty")
     process.exit(1)
 }
 else {
