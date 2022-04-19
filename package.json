@@ -1,0 +1,30 @@
+{
+  "name": "validatorcommisionsplit",
+  "version": "1.0.0",
+  "description": "Split cosmos chain validator commision to specific addresses according their delegations",
+  "main": "CommissionSplit.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/silentnoname/ValidatorCommissionSplit.git"
+  },
+  "keywords": [
+    "Cosmos",
+    "validator"
+  ],
+  "author": "silent",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/silentnoname/ValidatorCommissionSplit/issues"
+  },
+  "homepage": "https://github.com/silentnoname/ValidatorCommissionSplit#readme",
+  "dependencies": {
+    "@cosmjs/amino": "^0.28.4",
+    "@cosmjs/launchpad": "^0.27.1",
+    "@cosmjs/stargate": "^0.28.4",
+    "dotenv": "^16.0.0",
+    "winston": "^3.7.2"
+  }
+}
