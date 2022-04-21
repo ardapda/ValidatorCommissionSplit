@@ -192,10 +192,10 @@ async function getCommissionAndSplitReward(mnemonic:string,chainid:string) {
             throw err
         });
         if (sendtx.code != 0) {
-            logger.error("account: " + address + " split commission error,txhash: " + withdrawCommissiontx.transactionHash + 'total commission: ' + commission + chain.denom)
+            logger.error("account: " + address + " split commission error,txhash: " + sendtx.transactionHash + 'total commission: ' + commission + chain.denom)
         }
         if (sendtx.code == 0) {
-            logger.info("account: " + address + " split commission successfully,txhash: " + withdrawCommissiontx.transactionHash)
+            logger.info("account: " + address + " split commission successfully,txhash: " + sendtx.transactionHash)
         }
     }
 
