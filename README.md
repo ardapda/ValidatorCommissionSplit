@@ -27,3 +27,10 @@ npm install -g ts-node
 
 Info log`SplitCommission.log` and Error log`SplitCommissionError.log` will be at same directory with `CommissionSplit.ts`
 
+## Troubleshooting
+
+If you're using Ubuntu 20.04, you may need to add the floowing line on top of utf8.js under node_modules/@cosmjs/encoding/
+
+```
+const {TextDecoder, TextEncoder} = require("util");
+```
