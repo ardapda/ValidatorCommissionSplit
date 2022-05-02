@@ -17,11 +17,11 @@ npm install -g ts-node
 4. Edit the `chainconfig.ts` to add your custom chain and network config
 5. Edit the `addresslist.ts` , add your validator address ,and the delegators addresses that you want to split the commission to. Also you can add addresses for your custom chains.
 6. `cp .env.example .env`
-7. Input your validator account mnemonic and chainid to `.env` file
+7. Input your validator account mnemonic chainid and timeout to `.env` file
 
 ## Run
 
-`ts-node CommissionSplit.ts` 
+`ts-node CommissionSplit.ts`
 
 ## Log
 
@@ -29,7 +29,7 @@ Info log`SplitCommission.log` and Error log`SplitCommissionError.log` will be at
 
 ## Troubleshooting
 
-If you're using Ubuntu 20.04, you may need to add the floowing line on top of utf8.js under node_modules/@cosmjs/encoding/
+If you're using Ubuntu 20.04, you may need to add the following line on top of utf8.js under node_modules/@cosmjs/encoding/
 
 ```
 const {TextDecoder, TextEncoder} = require("util");

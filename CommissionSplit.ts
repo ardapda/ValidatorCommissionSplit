@@ -3,6 +3,7 @@ import {chainconfig} from "./chainconfig";
 import {addresslist} from "./addresslist";
 import { Secp256k1HdWallet} from "@cosmjs/amino";
 import { coins } from "@cosmjs/launchpad"
+import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 
 //load env variables
 import 'dotenv/config'
@@ -87,11 +88,11 @@ async function getProportionOfEachaddress(chainid:string){
         let address=list.delegator_address[i]
         let del=await queryDelegations(chainid,address,validator_address)
         if (del != null){
-        delegations.push({
-            delegator_address:address,
-            delegation:Number(del.amount),
-            shares:0
-        })}
+            delegations.push({
+                delegator_address:address,
+                delegation:Number(del.amount),
+                shares:0
+            })}
     }
 
     //calculate the total delegation
@@ -143,11 +144,21 @@ async function getCommissionAndSplitReward(mnemonic:string,chainid:string) {
         gas: "500000",
     };
     let client = await getsigningclient(mnemonic, chainid)
-    logger.info("start to withdraw commission")
-    let withdrawCommissiontx = await client.signAndBroadcast(address, withdrawCommissionMsgs, withdrawCommissionFee, '').catch(err => {
-        logger.error("account"+" Withdraw commission may failed, error:"+err)
+    logger.info("start to withdraw commission and split reward,total gas will be: "+2*chain.min_tx_fee+chain.denom )
+    let withdrawCommissionTXraw=await client.sign(address, withdrawCommissionMsgs, withdrawCommissionFee, '').catch(err => {
+        logger.error("account"+ address +" sign Withdraw commission msg may failed, error:"+err)
         throw err
     })
+    const withdrawCommissiontxBytes = TxRaw.encode(withdrawCommissionTXraw).finish();
+    let withdrawCommissiontx =await client.broadcastTx(withdrawCommissiontxBytes,process.env.timeout as unknown as number).catch(err => {
+        logger.error("account"+ address +" broadcast Withdraw commission msg may failed, error:"+err)
+        throw err
+    }) //time out default is 180000ms(3min) to ensure the transaction can be found in block
+
+    // let withdrawCommissiontx = await client.signAndBroadcast(address, withdrawCommissionMsgs, withdrawCommissionFee, '').catch(err => {
+    //     logger.error("account"+" Withdraw commission may failed, error:"+err)
+    //     throw err
+    // })
     if (withdrawCommissiontx.code != 0) {
         logger.error("account: " + address + " withdraw commission error,txhash: " + withdrawCommissiontx.transactionHash)
     }
@@ -180,17 +191,27 @@ async function getCommissionAndSplitReward(mnemonic:string,chainid:string) {
             sendmsgs.push({
                 typeUrl: "/cosmos.bank.v1beta1.MsgSend",
                 value: {
-                        fromAddress: address,
-                        toAddress: delegation_for_each_address.delegator_address,
-                        amount: coins(Math.floor(commission * delegation_for_each_address.shares), chain.denom) //use math.floor to make sure the amount is a safe integer,the disparity between the sending amount and the accurate amount will be 1ucre
-                    },
-                })
-            logger.info("account: " + address + " will send " + Math.floor(commission * delegation_for_each_address.shares) + chain.denom + " to " + delegation_for_each_address.delegator_address)
+                    fromAddress: address,
+                    toAddress: delegation_for_each_address.delegator_address,
+                    amount: coins(Math.floor((commission-2*parseInt(chain.min_tx_fee)) * delegation_for_each_address.shares), chain.denom) //use math.floor to make sure the amount is a safe integer,the disparity between the sending amount and the accurate amount will be 1ucre.  2*parseInt(chain.min_tx_fee)) is for the two transactions gas fee
+                },
+            })
+            logger.info("account: " + address + " will send " + Math.floor((commission-2*parseInt(chain.min_tx_fee)) * delegation_for_each_address.shares) + chain.denom + " to " + delegation_for_each_address.delegator_address)
         }
-        let sendtx = await client.signAndBroadcast(address, sendmsgs, sendTokenFee, 'split commission').catch(err => {
-            logger.error("Split commission may failed, error:"+err)
+        let sendTXraw=await client.sign(address, sendmsgs, sendTokenFee, '').catch(err => {
+            logger.error("account"+address+"sign send commission msg may failed, error:"+err)
             throw err
-        });
+        })
+        const sendtxBytes = TxRaw.encode(sendTXraw).finish();
+        let sendtx =await client.broadcastTx(sendtxBytes,process.env.timeout as unknown as number).catch(err => {
+            logger.error("account"+address+" broadcast send commission msg may failed, error:"+err)
+            throw err
+        })//time out default is 180000ms(3min) to ensure the transaction can be found in block
+
+        // let sendtx = await client.signAndBroadcast(address, sendmsgs, sendTokenFee, 'split commission').catch(err => {
+        //     logger.error("Split commission may failed, error:"+err)
+        //     throw err
+        // });
         if (sendtx.code != 0) {
             logger.error("account: " + address + " split commission error,txhash: " + sendtx.transactionHash + 'total commission: ' + commission + chain.denom)
         }
@@ -201,8 +222,10 @@ async function getCommissionAndSplitReward(mnemonic:string,chainid:string) {
 
 }
 
-if (process.env.MNEMONIC== undefined || process.env.MNEMONIC == "" || process.env.chainid == undefined || process.env.chainid == "") {
-    logger.error("MNEMONIC and chainid are undefined or empty")
+
+
+if (process.env.MNEMONIC== undefined || process.env.MNEMONIC == "" || process.env.chainid == undefined || process.env.chainid == ""|| process.env.timeout == ""|| process.env.timeout == undefined) {
+    logger.error("MNEMONIC, chainid and timeout are undefined or empty")
     process.exit(1)
 }
 else {

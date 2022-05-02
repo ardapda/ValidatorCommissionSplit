@@ -5,7 +5,7 @@ export const chainconfig: { [key: string]: any } = {
         rest_api:'https://crescent-api.polkachu.com/',
         symbol:'CRE',
         denom: "ucre",
-        min_tx_fee: "0",
+        min_tx_fee: "2000",
         prefix:"cre"
     },
     "mooncat-1-1":{
