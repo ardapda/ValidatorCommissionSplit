@@ -1,6 +1,10 @@
 # ValidatorCommissionSplit
 Split cosmos chain validator commission to specific addresses according their delegations
 
+## New changes
+1. You can set custom timeout when broadcasting transactions. 
+2. Considered the gas fee when making transactions
+
 ## Prerequisites
 1. You have installed [Nodejs]( https://nodejs.org/en/)
 2. You have installed [ts-node](https://www.npmjs.com/package/ts-node)
